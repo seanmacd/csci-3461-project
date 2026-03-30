@@ -10,11 +10,19 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@duckdb/node-api": "^1.5.1-r.1",
     "@mantine/core": "8.3.16",
     "@mantine/hooks": "8.3.16",
+    "@phosphor-icons/react": "^2.1.10",
+    "ag-charts-enterprise": "^13.2.0",
+    "ag-grid-community": "^35.2.0",
+    "ag-grid-enterprise": "^35.2.0",
+    "ag-grid-react": "^35.2.0",
+    "fuse.js": "^7.1.0",
     "next": "^16.2.1",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react-dom": "^19.2.4",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
@@ -28,5 +36,8 @@
     "prettier": "^3.8.1",
     "typescript": "^6.0.2"
   },
-  "packageManager": "yarn@4.13.0"
+  "packageManager": "yarn@4.13.0",
+  "trustedDependencies": [
+    "unrs-resolver"
+  ]
 }
