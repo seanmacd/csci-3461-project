@@ -6,7 +6,7 @@ import {OrdersTab} from './Orders.tab'
 import {PartsTab} from './Parts.tab'
 import {SuppliersTab} from './Suppliers.tab'
 import {BudgetProjectionTab} from './BudgetProjection.tab'
-
+import {AnnualExpensesTab} from './AnnualExpenses.tab'
 
 type TabDef = {
   value: string
@@ -60,6 +60,9 @@ export default async function Dashboard() {
       </TabsPanel>
       <TabsPanel value="orders">
         <OrdersTab orders={orders} />
+      </TabsPanel>
+      <TabsPanel value="annualExpenses">
+        <AnnualExpensesTab orders={orders} parts={parts} />
       </TabsPanel>
       <TabsPanel value="budgetProjection">
         <BudgetProjectionTab orders={orders} />
