@@ -1,20 +1,18 @@
 'use client'
 
-import {Box, Divider, Group, NumberInput, Select, Stack, Text, Title} from '@mantine/core'
-import {ModuleRegistry as ChartModuleRegistry} from 'ag-charts-enterprise'
+import {Box, Group, NumberInput, Stack, Text, Title, useMantineTheme} from '@mantine/core'
 import {AgCharts} from 'ag-charts-react'
 import {themeAlpine, type ColDef} from 'ag-grid-community'
 import {AgGridReact} from 'ag-grid-react'
 
-ChartModuleRegistry.registerModules([])
-
+import {AgChartOptions} from 'ag-charts-community'
 import {useMemo, useState} from 'react'
 import type {Order} from '../data/schemas/order.schema'
+import {currencyValueFormatter} from './currency-format'
 
 export function BudgetProjectionTab({orders}: {orders: Order[]}) {
   const [years, setYears] = useState<number | string>(5)
   const [inflationRate, setInflationRate] = useState<number | string>(2)
-  const [chartView, setChartView] = useState<string | null>('both')
 
   const baseTotal = useMemo(() => {
     if (!orders || orders.length === 0) return 100000
@@ -39,7 +37,6 @@ export function BudgetProjectionTab({orders}: {orders: Order[]}) {
       currentTotal = currentTotal * (1 + rate)
       data.push({
         year: year.toString(),
-        rawAmount: Number(baseTotal.toFixed(2)),
         cost: Number(currentTotal.toFixed(2))
       })
     }
@@ -47,80 +44,31 @@ export function BudgetProjectionTab({orders}: {orders: Order[]}) {
   }, [baseTotal, years, inflationRate])
 
   const colDefs: ColDef[] = [
-    {field: 'year', headerName: 'Year', flex: 1},
-    {
-      field: 'rawAmount',
-      headerName: 'Baseline Cost ($)',
-      flex: 1,
-      valueFormatter: params => {
-        if (params.value == null) return ''
-        return `$${Number(params.value).toLocaleString('en-CA', {
-          useGrouping: false,
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        })}`
-      }
-    },
-    {
-      field: 'cost',
-      headerName: 'Projected Cost ($)',
-      flex: 1,
-      valueFormatter: params => {
-        if (params.value == null) return ''
-        return `$${Number(params.value).toLocaleString('en-CA', {
-          useGrouping: false,
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        })}`
-      }
-    }
+    {field: 'year', headerName: 'Year'},
+    {field: 'cost', headerName: 'Projected Cost ($)', valueFormatter: currencyValueFormatter}
   ]
 
-  const seriesToDisplay: any[] = []
+  const theme = useMantineTheme()
 
-  if (chartView === 'both' || chartView === 'baseline') {
-    seriesToDisplay.push({
-      type: 'bar',
-      xKey: 'year',
-      yKey: 'rawAmount',
-      yName: 'Baseline Cost',
-      fill: '#9230e8',
-      strokeWidth: 0
-    })
-  }
-
-  if (chartView === 'both' || chartView === 'projected') {
-    seriesToDisplay.push({
-      type: 'bar',
-      xKey: 'year',
-      yKey: 'cost',
-      yName: 'Projected Cost',
-      fill: '#9230e8',
-      strokeWidth: 0
-    })
-  }
-
-  const chartOptions = {
+  const chartOptions: AgChartOptions = {
     data: projectionData,
-    title: {text: 'Budget Projection Overview'},
-    series: seriesToDisplay,
-    axes: [
-      {type: 'category', position: 'bottom', title: {text: 'Year'}},
-      {
+    series: [
+      {type: 'bar', xKey: 'year', yKey: 'cost', yName: 'Projected Cost', fill: theme.colors.violet[5], strokeWidth: 0}
+    ],
+    axes: {
+      x: {type: 'category', position: 'bottom', title: {text: 'Year'}},
+      y: {
         type: 'number',
         position: 'left',
-        title: {text: 'Total Cost ($)'},
-        label: {
-          formatter: (params: any) => `$${Number(params.value).toLocaleString('en-CA', {useGrouping: false})}`
-        }
+        title: {text: 'Cost ($)'},
+        label: {formatter: currencyValueFormatter}
       }
-    ]
+    }
   }
 
   return (
-    // 1. Removed maw and mx="auto" from this top Box so it takes the full width again
     <Box px="md">
-      <Stack gap="xs" mb="xl">
+      <Stack gap="xs" mb="lg">
         <Title order={3}>Budget Calculator</Title>
         <Text size="sm" c="dimmed">
           Project future spending by applying an annual inflation rate over a specified number of years, starting after
@@ -128,7 +76,7 @@ export function BudgetProjectionTab({orders}: {orders: Order[]}) {
         </Text>
       </Stack>
 
-      <Group mb="xl" align="flex-end">
+      <Group mb="lg" align="flex-end">
         <NumberInput
           label="Number of Years"
           description="Years to project after 2022"
@@ -146,41 +94,15 @@ export function BudgetProjectionTab({orders}: {orders: Order[]}) {
           decimalScale={2}
           w={200}
         />
-        <Select
-          label="Chart View"
-          description="Select metrics to display"
-          data={[
-            {value: 'both', label: 'Compare Both'},
-            {value: 'projected', label: 'Projected Cost Only'},
-            {value: 'baseline', label: 'Baseline Only'}
-          ]}
-          value={chartView}
-          onChange={setChartView}
-          w={200}
-        />
       </Group>
 
-      <Stack gap="xl">
-        {/* The Grid stays full width */}
-        <Box h={350} w="100%">
-          <Text fw={500} mb="xs">
-            Data Table
-          </Text>
-          <AgGridReact theme={themeAlpine} columnDefs={colDefs} rowData={projectionData} enableCharts={true} />
-        </Box>
+      <Box h={300} mb="lg">
+        <AgGridReact theme={themeAlpine} columnDefs={colDefs} rowData={projectionData} />
+      </Box>
 
-        <Divider my="xl" variant="dashed" color="gray.4" />
-
-        {/* 2. Added maw and mx="auto" ONLY to the chart wrapper */}
-        <Box maw={1000} mx="auto" w="100%">
-          <Text fw={500} mb="xs">
-            Visualization
-          </Text>
-          <Box h={400} w="100%">
-            <AgCharts options={chartOptions} />
-          </Box>
-        </Box>
-      </Stack>
+      <Box>
+        <AgCharts options={chartOptions} />
+      </Box>
     </Box>
   )
 }

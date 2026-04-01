@@ -1,15 +1,12 @@
 'use client'
 
-import { AllCommunityModule, IntegratedChartsModule } from 'ag-grid-enterprise'
-import { AgChartsEnterpriseModule } from 'ag-charts-enterprise'
-import { AgGridProvider } from 'ag-grid-react'
-import { PropsWithChildren } from 'react'
+import {AllCommunityModule as AllCharts, ModuleRegistry as ChartsModuleRegistry} from 'ag-charts-community'
+import {AllCommunityModule as AllGrid} from 'ag-grid-community'
+import {AgGridProvider} from 'ag-grid-react'
+import {PropsWithChildren} from 'react'
 
-const modules = [
-  AllCommunityModule,
-  IntegratedChartsModule.with(AgChartsEnterpriseModule)
-]
+ChartsModuleRegistry.registerModules([AllCharts])
 
 export default function AgGridClientProvider({children}: PropsWithChildren) {
-  return <AgGridProvider modules={modules}>{children}</AgGridProvider>
+  return <AgGridProvider modules={[AllGrid]}>{children}</AgGridProvider>
 }
