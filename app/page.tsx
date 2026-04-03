@@ -65,7 +65,7 @@ export default async function Dashboard() {
         <AnnualExpensesTab orders={orders} parts={parts} />
       </TabsPanel>
       <TabsPanel value="budgetProjection">
-        <BudgetProjectionTab orders={orders} />
+        <BudgetProjectionTab orders={orders} parts={parts} />
       </TabsPanel>
     </Tabs>
   )
