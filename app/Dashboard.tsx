@@ -46,24 +46,17 @@ export function Dashboard({data}: DashboardProps) {
 
   return (
     <Box p="md">
-      <Stack gap="sm">
-        <Text size="lg" fw={500}>
-          Overview
-        </Text>
-        <Grid>
-          <Grid.Col span={{base: 12, sm: 6, md: 3}}>
-            <StatCard label="Total Orders" value={orderCount} />
-          </Grid.Col>
-          <Grid.Col span={{base: 12, sm: 6, md: 3}}>
-            <StatCard label="Total Suppliers" value={supplierCount} />
-          </Grid.Col>
-          <Grid.Col span={{base: 12, sm: 6, md: 3}}>
-            <StatCard label="Total Parts" value={partCount} />
-          </Grid.Col>
-        </Grid>
-      </Stack>
-
-      {/* Recent Orders */}
+      <Grid>
+        <Grid.Col span={{base: 12, sm: 6, md: 3}}>
+          <StatCard label="Total Orders" value={orderCount} />
+        </Grid.Col>
+        <Grid.Col span={{base: 12, sm: 6, md: 3}}>
+          <StatCard label="Total Suppliers" value={supplierCount} />
+        </Grid.Col>
+        <Grid.Col span={{base: 12, sm: 6, md: 3}}>
+          <StatCard label="Total Parts" value={partCount} />
+        </Grid.Col>
+      </Grid>
       <Stack gap="sm">
         <Group justify="space-between" align="flex-end">
           <Stack gap={0}>
