@@ -7,6 +7,6 @@ import {PropsWithChildren} from 'react'
 
 ChartsModuleRegistry.registerModules([AllCharts])
 
-export default function AgGridClientProvider({children}: PropsWithChildren) {
+export function AgGridClientProvider({children}: PropsWithChildren) {
   return <AgGridProvider modules={[AllGrid]}>{children}</AgGridProvider>
 }
