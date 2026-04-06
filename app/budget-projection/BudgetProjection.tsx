@@ -1,13 +1,14 @@
 'use client'
 
-import {ChartWithTableLayout} from '@/components'
-import {currencyValueFormatter} from '@/utils/currency-format'
-import {Group, NumberInput, Text, useMantineTheme} from '@mantine/core'
-import type {AgChartOptions} from 'ag-charts-community'
-import {type ColDef} from 'ag-grid-community'
-import {useMemo, useState} from 'react'
+import { ChartWithTableLayout } from '@/components'
+import { currencyValueFormatter } from '@/utils/currency-format'
+// Added Alert and Stack to the Mantine imports
+import { Group, NumberInput, Text, useMantineTheme, Alert, Stack } from '@mantine/core' 
+import type { AgChartOptions } from 'ag-charts-community'
+import { type ColDef } from 'ag-grid-community'
+import { useMemo, useState } from 'react'
 
-export function BudgetProjection({baseTotal}: {baseTotal: number}) {
+export function BudgetProjection({ baseTotal }: { baseTotal: number }) {
   const [years, setYears] = useState<number | string>(5)
   const [inflationRate, setInflationRate] = useState<number | string>(2)
 
@@ -16,22 +17,21 @@ export function BudgetProjection({baseTotal}: {baseTotal: number}) {
     const startYear = 2022
 
     const data = []
-    data.push({year: startYear.toString(), cost: Number(baseTotal.toFixed(2))})
-
-    // Project future years
     let total = baseTotal
-    for (let i = 1; i < Math.max(1, Number(years) || 0); i++) {
+
+    const nYears = Math.max(1, Number(years) || 0)
+    for (let i = 1; i <= nYears; i++) {
       total = total * (1 + rate)
       const year = startYear + i
-      data.push({year: year.toString(), cost: Number(total.toFixed(2))})
+      data.push({ year: year.toString(), cost: Number(total.toFixed(2)) })
     }
 
     return data
   }, [baseTotal, years, inflationRate])
 
   const colDefs: ColDef[] = [
-    {field: 'year', headerName: 'Year'},
-    {field: 'cost', headerName: 'Projected Cost ($)', valueFormatter: currencyValueFormatter}
+    { field: 'year', headerName: 'Year' },
+    { field: 'cost', headerName: 'Projected Cost ($)', valueFormatter: currencyValueFormatter }
   ]
 
   const theme = useMantineTheme()
@@ -39,40 +39,51 @@ export function BudgetProjection({baseTotal}: {baseTotal: number}) {
   const chartOptions: AgChartOptions = {
     data: projectionData,
     series: [
-      {type: 'bar', xKey: 'year', yKey: 'cost', yName: 'Projected Cost', fill: theme.colors.violet[5], strokeWidth: 0}
+      { type: 'bar', xKey: 'year', yKey: 'cost', yName: 'Projected Cost', fill: theme.colors.violet[5], strokeWidth: 0 }
     ],
     axes: {
-      x: {type: 'category', position: 'bottom', title: {text: 'Year'}},
+      x: { type: 'category', position: 'bottom', title: { text: 'Year' } },
       y: {
         type: 'number',
         position: 'left',
-        title: {text: 'Cost ($)'},
-        label: {formatter: currencyValueFormatter}
+        title: { text: 'Cost ($)' },
+        label: { formatter: currencyValueFormatter }
       }
     }
   }
 
+  const formattedBase = new Intl.NumberFormat('en-CA', { 
+    style: 'currency', 
+    currency: 'CAD' 
+  }).format(baseTotal)
+
   const controls = (
-    <Group>
-      <NumberInput
-        label="Number of Years"
-        description="Years to project after 2022"
-        value={years}
-        onChange={setYears}
-        min={1}
-        max={50}
-        w={200}
-      />
-      <NumberInput
-        label="Inflation Rate %"
-        description="Annual inflation rate"
-        value={inflationRate}
-        onChange={setInflationRate}
-        step={0.1}
-        decimalScale={2}
-        w={200}
-      />
-    </Group>
+    <Stack gap="md">
+      <Group>
+        <NumberInput
+          label="Number of Years"
+          description="Years to project after 2022"
+          value={years}
+          onChange={setYears}
+          min={1}
+          max={50}
+          w={200}
+        />
+        <NumberInput
+          label="Inflation Rate %"
+          description="Annual inflation rate"
+          value={inflationRate}
+          onChange={setInflationRate}
+          step={0.1}
+          decimalScale={2}
+          w={200}
+        />
+      </Group>
+
+      <Alert variant="light" color="blue" title="" p="sm">
+        Baseline (2022): {formattedBase}, applying {inflationRate}% annual inflation
+      </Alert>
+    </Stack>
   )
 
   return (
@@ -80,8 +91,7 @@ export function BudgetProjection({baseTotal}: {baseTotal: number}) {
       title="Budget Calculator"
       description={
         <Text size="sm" c="dimmed">
-          Project future spending by applying an annual inflation rate over a specified number of years, starting after
-          2022.
+          Project future parts spending using compound inflation, starting from the 2022 baseline.
         </Text>
       }
       controls={controls}
