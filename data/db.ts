@@ -64,15 +64,15 @@ export async function getAnnualExpenses(startYear?: number, endYear?: number): P
 }
 
 export async function getBudgetProjectionBase(): Promise<number> {
-  // Calculate total spending from all orders as the base for budget projection
   const sql = `
     SELECT SUM(op.qty * p.price) as value
     FROM orders o
     JOIN order_parts op ON o.id = op.order_id
     JOIN parts p ON op.part_id = p.id
+    WHERE YEAR(o.order_date) = 2022
   `
-  const [total] = await query<{value: number}>(sql)
-  return total.value
+  const [total] = await query<{value: number}>(sql) 
+  return total.value || 0 
 }
 
 export async function getOrders(limit?: number): Promise<Order[]> {
