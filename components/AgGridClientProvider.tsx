@@ -3,10 +3,10 @@
 import {AllCommunityModule as AllCharts, ModuleRegistry as ChartsModuleRegistry} from 'ag-charts-community'
 import {AllCommunityModule as AllGrid} from 'ag-grid-community'
 import {AgGridProvider} from 'ag-grid-react'
-import {PropsWithChildren} from 'react'
+import type {PropsWithChildren} from 'react'
 
 ChartsModuleRegistry.registerModules([AllCharts])
 
-export default function AgGridClientProvider({children}: PropsWithChildren) {
+export function AgGridClientProvider({children}: PropsWithChildren) {
   return <AgGridProvider modules={[AllGrid]}>{children}</AgGridProvider>
 }
