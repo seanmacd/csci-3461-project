@@ -1,6 +1,7 @@
+import type {SupplierForm} from '@/app/add-supplier/supplier-form.schema'
 import {env} from '@/env'
-import mysql, {RowDataPacket} from 'mysql2/promise'
-import {AnnualExpense, AnnualExpensesData, DashboardData, Order, Part, Supplier} from './types'
+import mysql, {type RowDataPacket} from 'mysql2/promise'
+import type {AnnualExpense, AnnualExpensesData, DashboardData, Order, Part, Supplier} from './types'
 
 export const db = mysql.createPool(env.DATABASE_URL)
 
@@ -113,4 +114,27 @@ export async function getSuppliers(): Promise<Supplier[]> {
     ORDER BY s.id
   `
   return query<Supplier>(sql)
+}
+export async function addSupplier(input: SupplierForm): Promise<void> {
+  const {id, email, name, phoneNumbers} = input
+
+  const conn = await db.getConnection()
+
+  try {
+    await conn.beginTransaction()
+    // create supplier
+    await conn.execute('INSERT INTO suppliers (id, name, email) VALUES (?, ?, ?)', [id, name, email])
+
+    // add supplier phone numbers
+    const placeholders = phoneNumbers.map(() => '(?, ?)').join(', ')
+    const phoneValues = phoneNumbers.flatMap(pn => [id, pn])
+    await conn.execute(`INSERT INTO supplier_phones (supplier_id, phone) VALUES ${placeholders}`, phoneValues)
+
+    await conn.commit()
+  } catch (error) {
+    await conn.rollback()
+    throw error
+  } finally {
+    conn.release()
+  }
 }

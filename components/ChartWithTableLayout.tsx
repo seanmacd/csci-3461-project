@@ -5,7 +5,7 @@ import type {AgChartOptions} from 'ag-charts-community'
 import {AgCharts} from 'ag-charts-react'
 import {themeAlpine, type ColDef} from 'ag-grid-community'
 import {AgGridReact} from 'ag-grid-react'
-import {ReactNode} from 'react'
+import type {ReactNode} from 'react'
 
 type ChartWithTableLayoutProps = {
   title: string

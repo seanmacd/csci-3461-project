@@ -4,7 +4,7 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['@mantine/core', '@mantine/hooks']
   },
-  serverExternalPackages: ['@duckdb/node-api']
+  serverExternalPackages: ['mysql2']
 }
 
 export default nextConfig

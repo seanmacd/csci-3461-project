@@ -1,7 +1,7 @@
 'use client'
 
 import {PopoverListCell, StatCard} from '@/components'
-import {DashboardData, OrderPart} from '@/data/types'
+import type {DashboardData, OrderPart} from '@/data/types'
 import {Box, Grid, Group, Select, Stack, Text} from '@mantine/core'
 import {themeAlpine, type ColDef} from 'ag-grid-community'
 import {AgGridReact} from 'ag-grid-react'

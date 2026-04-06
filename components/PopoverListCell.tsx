@@ -2,7 +2,7 @@
 
 import {Badge, Popover, Stack} from '@mantine/core'
 import {CaretDownIcon} from '@phosphor-icons/react/dist/ssr'
-import {ReactNode} from 'react'
+import type {ReactNode} from 'react'
 
 type PopoverListCellProps<T> = {
   items: T[]

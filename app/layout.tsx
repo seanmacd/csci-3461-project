@@ -1,11 +1,13 @@
 import {AgGridClientProvider} from '@/components'
 import {Badge, Box, Group, mantineHtmlProps, MantineProvider, Stack} from '@mantine/core'
+import {Notifications} from '@mantine/notifications'
 import {CarIcon} from '@phosphor-icons/react/dist/ssr'
-import {PropsWithChildren} from 'react'
+import type {PropsWithChildren} from 'react'
 import {NavLink} from '../components'
 import {theme} from '../theme'
 
 import '@mantine/core/styles.css'
+import '@mantine/notifications/styles.css'
 
 export const metadata = {
   title: 'MUC Dashboard',
@@ -21,6 +23,7 @@ export default function RootLayout({children}: {children: any}) {
       </head>
       <body>
         <MantineProvider theme={theme}>
+          <Notifications autoClose={5000} />
           <AgGridClientProvider>
             <Navigation>{children}</Navigation>
           </AgGridClientProvider>
@@ -35,6 +38,7 @@ type LinkDef = {href: string; label: string}
 const linkDefs: LinkDef[] = [
   {href: '/', label: 'Dashboard'},
   {href: '/data-viewer', label: 'Data Viewer'},
+  {href: '/add-supplier', label: 'Supplier Registration'},
   {href: '/annual-expenses', label: 'Annual Expenses'},
   {href: '/budget-projection', label: 'Budget Projection'}
 ]

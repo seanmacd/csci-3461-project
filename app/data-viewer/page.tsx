@@ -1,6 +1,6 @@
 import {getOrders, getParts, getSuppliers} from '@/data/db'
 import z from 'zod'
-import {DataViewer, DataViewerData} from './DataViewer'
+import {DataViewer, type DataViewerData} from './DataViewer'
 
 const tabs = ['orders', 'parts', 'suppliers'] as const
 
