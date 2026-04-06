@@ -35,8 +35,7 @@ A modern web application for managing suppliers, orders, and parts with budget f
 1. Clone the repository
 
 ```bash
-git clone <repository-url>
-cd csci-3461-project
+git clone https://github.com/seanmacd/csci-3461-project.git && cd csci-3461-project
 ```
 
 2. Install dependencies
@@ -48,16 +47,32 @@ bun install
 3. Set up environment variables
 
 ```bash
-cp .env.example .env.local
+cp .env.example .env
 ```
 
-4. Start the development server
+Edit `.env` and configure your database connection:
+
+```env
+DATABASE_URL="mysql://username:password@localhost:3306/database_name"
+```
+
+**Environment Variables:**
+
+- `DATABASE_URL` - MySQL connection string in the format `mysql://user:password@host:port/database`
+
+4. Set up the database
+
+```bash
+mysql -u root -p < scripts/make_tables.sql
+```
+
+5. Start the development server
 
 ```bash
 bun dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+6. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## Available Scripts
 
